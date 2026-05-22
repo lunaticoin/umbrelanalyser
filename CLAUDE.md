@@ -56,6 +56,12 @@ docker run --rm -p 3000:3000 \
 gh workflow run docker.yml -R {username}/umbrelanalyser -f version=v1.0.0
 ```
 
+## Versionado
+
+A partir de la siguiente release tras v1.0.1, la numeración salta a **0.0.x** (próxima = `0.0.3`, luego `0.0.4`, etc.). Es voluntario para señalar que el proyecto sigue siendo pre-1.0. Las v1.0.0 y v1.0.1 son artefactos de bootstrap, no precedente.
+
+Aviso: Umbrel usa el campo `version` para detectar updates. Saltar 1.0.1 → 0.0.3 es un downgrade en semver, así que **NO** dispara "Update available" en instalaciones existentes. Como nadie ha conseguido instalar la app hasta ahora, no afecta. Si en algún momento hay usuarios en v1.0.x antes del salto, avisarles a desinstalar+reinstalar manualmente.
+
 ## Decisiones técnicas
 
 - **Stack**: Python 3.12 + FastAPI + SQLite + Chart.js self-hosted. Vanilla JS sin bundler.
