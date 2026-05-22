@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <h1>📊 Umbrel Analyser</h1>
+    <h1><a href="/" class="brand">📊 Umbrel Analyser</a></h1>
     <nav>
       <a href="/">Apps</a>
       <a href="/settings.html">Settings</a>
@@ -21,6 +21,24 @@
         <span id="health" class="muted">…</span>
         <button id="refresh" class="btn">Refresh</button>
         <span style="margin-left:auto" class="muted">Auto-refresh every 15s</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Export all apps</h2>
+      <div class="toolbar">
+        <div class="range-buttons" id="export-range">
+          <button data-h="1">1h</button>
+          <button data-h="6">6h</button>
+          <button data-h="24" class="active">24h</button>
+          <button data-h="168">7d</button>
+          <button data-h="720">30d</button>
+          <button data-h="0">All</button>
+        </div>
+        <span style="margin-left:auto"></span>
+        <a id="export-csv-samples" class="btn" href="#">CSV · samples</a>
+        <a id="export-csv-sizes"   class="btn" href="#">CSV · sizes</a>
+        <a id="export-json"        class="btn" href="#">JSON · everything</a>
       </div>
     </div>
 

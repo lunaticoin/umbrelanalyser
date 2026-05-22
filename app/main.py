@@ -115,9 +115,9 @@ def get_container(container_id: str) -> Dict[str, Any]:
 
 def _resolve_range(ts_from: Optional[int], ts_to: Optional[int], hours: Optional[int]) -> tuple[int, int]:
     now = db.now_ts()
-    if ts_from is None and ts_to is None and hours is not None:
+    if hours is not None and ts_from is None and ts_to is None:
         ts_to = now
-        ts_from = now - hours * 3600
+        ts_from = 0 if hours == 0 else now - hours * 3600
     if ts_from is None:
         ts_from = now - 24 * 3600
     if ts_to is None:
@@ -142,7 +142,7 @@ def metrics(
     container_id: str,
     ts_from: Optional[int] = Query(None, alias="from"),
     ts_to: Optional[int] = Query(None, alias="to"),
-    hours: Optional[int] = Query(None, ge=1, le=24 * 365),
+    hours: Optional[int] = Query(None, ge=0, le=24 * 365),
 ) -> Dict[str, Any]:
     ts_from, ts_to = _resolve_range(ts_from, ts_to, hours)
     with db.get_conn() as conn:
@@ -162,7 +162,7 @@ def export_csv(
     container_id: str,
     ts_from: Optional[int] = Query(None, alias="from"),
     ts_to: Optional[int] = Query(None, alias="to"),
-    hours: Optional[int] = Query(None, ge=1, le=24 * 365),
+    hours: Optional[int] = Query(None, ge=0, le=24 * 365),
     kind: str = Query("samples", pattern="^(samples|sizes)$"),
 ) -> Response:
     ts_from, ts_to = _resolve_range(ts_from, ts_to, hours)
@@ -191,7 +191,7 @@ def export_json(
     container_id: str,
     ts_from: Optional[int] = Query(None, alias="from"),
     ts_to: Optional[int] = Query(None, alias="to"),
-    hours: Optional[int] = Query(None, ge=1, le=24 * 365),
+    hours: Optional[int] = Query(None, ge=0, le=24 * 365),
 ) -> Response:
     ts_from, ts_to = _resolve_range(ts_from, ts_to, hours)
     with db.get_conn() as conn:
@@ -204,6 +204,58 @@ def export_json(
     body = export.rows_to_json(dict(cont), [dict(r) for r in samples], [dict(r) for r in sizes], ts_from, ts_to)
     safe_name = "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in cont["name"])
     filename = f"{safe_name}_{ts_from}_{ts_to}.json"
+    return Response(
+        body,
+        media_type="application/json",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+# ---- global export ----
+
+@app.get("/api/export/all.csv")
+def export_all_csv(
+    ts_from: Optional[int] = Query(None, alias="from"),
+    ts_to: Optional[int] = Query(None, alias="to"),
+    hours: Optional[int] = Query(None, ge=0, le=24 * 365),
+    kind: str = Query("samples", pattern="^(samples|sizes)$"),
+) -> Response:
+    ts_from, ts_to = _resolve_range(ts_from, ts_to, hours)
+    with db.get_conn() as conn:
+        if kind == "samples":
+            rows = db.samples_range_all(conn, ts_from, ts_to)
+            fields = export.SAMPLE_FIELDS_ALL
+        else:
+            rows = db.size_samples_range_all(conn, ts_from, ts_to)
+            fields = export.SIZE_FIELDS_ALL
+        csv_text = export.rows_to_csv((dict(r) for r in rows), fields)
+    filename = f"umbrelanalyser_all_{kind}_{ts_from}_{ts_to}.csv"
+    return PlainTextResponse(
+        csv_text,
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@app.get("/api/export/all.json")
+def export_all_json(
+    ts_from: Optional[int] = Query(None, alias="from"),
+    ts_to: Optional[int] = Query(None, alias="to"),
+    hours: Optional[int] = Query(None, ge=0, le=24 * 365),
+) -> Response:
+    ts_from, ts_to = _resolve_range(ts_from, ts_to, hours)
+    with db.get_conn() as conn:
+        containers = [dict(c) for c in db.list_containers(conn)]
+        samples_rows = db.samples_range_all(conn, ts_from, ts_to)
+        sizes_rows = db.size_samples_range_all(conn, ts_from, ts_to)
+    samples_by_cid: Dict[str, list] = {}
+    for r in samples_rows:
+        samples_by_cid.setdefault(r["container_id"], []).append(dict(r))
+    sizes_by_cid: Dict[str, list] = {}
+    for r in sizes_rows:
+        sizes_by_cid.setdefault(r["container_id"], []).append(dict(r))
+    body = export.all_to_json(containers, samples_by_cid, sizes_by_cid, ts_from, ts_to)
+    filename = f"umbrelanalyser_all_{ts_from}_{ts_to}.json"
     return Response(
         body,
         media_type="application/json",

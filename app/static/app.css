@@ -41,6 +41,13 @@ header h1 {
   letter-spacing: 0.2px;
 }
 
+header h1 a.brand {
+  color: inherit;
+  text-decoration: none;
+}
+
+header h1 a.brand:hover { opacity: 0.85; }
+
 header nav {
   display: flex;
   gap: 14px;

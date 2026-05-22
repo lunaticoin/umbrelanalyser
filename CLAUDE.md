@@ -6,10 +6,9 @@ Caso de uso principal: comparar el consumo de una app como electrs durante index
 
 ## Estado actual
 
-- **Fase**: v1.0.0 publicado a `lunaticoin/lunaticoin-umbrel-app-store`. Pendiente de probar en un Umbrel real.
-- **Última sesión**: 2026-05-22 — primer release + publicación al store comunitario
-- **Última acción**: workflow `docker.yml` (run 26276474522) construyó la imagen multi-arch, digest pineado `sha256:02080b2f155205fc1c5dbf054c25fe858f6f063bf6a2e12ba12fddcc903a864d`, push hecho a ambos repos
-- **Imagen**: `ghcr.io/lunaticoin/umbrelanalyser:v1.0.0`
+- **Fase**: v0.0.3 (post-reset de versionado). Añade export global desde el dashboard + título clickable. v1.0.1 corrigió el puerto host (3000→3737).
+- **Última sesión**: 2026-05-22 — export global + título-link + bump 0.0.3
+- **Imagen**: `ghcr.io/lunaticoin/umbrelanalyser:v0.0.3`
 - **Repo código**: https://github.com/lunaticoin/umbrelanalyser
 - **Repo store**: https://github.com/lunaticoin/lunaticoin-umbrel-app-store (carpeta `lunaticoin-umbrelanalyser`)
 
@@ -97,3 +96,4 @@ Aviso: Umbrel usa el campo `version` para detectar updates. Saltar 1.0.1 → 0.0
 
 - 2026-05-22 — proyecto creado, esqueleto inicial; v1.0.0 publicado al store
 - 2026-05-22 — v1.0.1: fix puerto host 3000→3737 (3000 reservado por umbrelOS, install fallaba al bind del app_proxy). Sólo cambio en manifest; no rebuild.
+- 2026-05-22 — v0.0.3: añadido export global (CSV samples/sizes y JSON con todo) en el dashboard con selector de rango. Título del header clickable → home. Reset de numeración a 0.0.x.

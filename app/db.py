@@ -199,6 +199,35 @@ def size_samples_range(conn: sqlite3.Connection, container_id: str, ts_from: int
     ).fetchall()
 
 
+def samples_range_all(conn: sqlite3.Connection, ts_from: int, ts_to: int):
+    return conn.execute(
+        """
+        SELECT s.ts, s.container_id, c.name AS container_name,
+               s.cpu_percent, s.mem_bytes, s.mem_limit_bytes, s.mem_percent,
+               s.blk_read_bytes, s.blk_write_bytes, s.net_rx_bytes, s.net_tx_bytes
+        FROM samples s
+        LEFT JOIN containers c ON c.container_id = s.container_id
+        WHERE s.ts BETWEEN ? AND ?
+        ORDER BY s.container_id, s.ts ASC
+        """,
+        (ts_from, ts_to),
+    ).fetchall()
+
+
+def size_samples_range_all(conn: sqlite3.Connection, ts_from: int, ts_to: int):
+    return conn.execute(
+        """
+        SELECT s.ts, s.container_id, c.name AS container_name,
+               s.rw_bytes, s.root_fs_bytes, s.data_dir_bytes
+        FROM size_samples s
+        LEFT JOIN containers c ON c.container_id = s.container_id
+        WHERE s.ts BETWEEN ? AND ?
+        ORDER BY s.container_id, s.ts ASC
+        """,
+        (ts_from, ts_to),
+    ).fetchall()
+
+
 def db_stats(conn: sqlite3.Connection) -> dict:
     row = conn.execute(
         "SELECT COUNT(*) AS n, MIN(ts) AS min_ts, MAX(ts) AS max_ts FROM samples"

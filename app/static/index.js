@@ -71,3 +71,24 @@ async function refresh() {
 refreshBtn.addEventListener("click", refresh);
 refresh();
 setInterval(refresh, 15000);
+
+// ---- global export ----
+const exportRangeBtns = document.querySelectorAll("#export-range button");
+const exportCsvSamples = document.getElementById("export-csv-samples");
+const exportCsvSizes   = document.getElementById("export-csv-sizes");
+const exportJsonBtn    = document.getElementById("export-json");
+let exportHours = 24;
+
+function refreshExportLinks() {
+  const q = `hours=${exportHours}`;
+  exportCsvSamples.href = `/api/export/all.csv?${q}&kind=samples`;
+  exportCsvSizes.href   = `/api/export/all.csv?${q}&kind=sizes`;
+  exportJsonBtn.href    = `/api/export/all.json?${q}`;
+}
+exportRangeBtns.forEach((b) => b.addEventListener("click", () => {
+  exportRangeBtns.forEach((x) => x.classList.remove("active"));
+  b.classList.add("active");
+  exportHours = parseInt(b.dataset.h, 10);
+  refreshExportLinks();
+}));
+refreshExportLinks();
