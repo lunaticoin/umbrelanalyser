@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: ${APP_LUNATICOIN_UMBRELANALYSER_IP}
+      APP_PORT: ${APP_LUNATICOIN_UMBRELANALYSER_PORT}
+      PROXY_AUTH_ADD: "true"
+
+  app:
+    # Replace the digest after each build (see CLAUDE.md for the deploy flow)
+    image: ghcr.io/lunaticoin/umbrelanalyser:v1.0.0
+    init: true
+    restart: on-failure
+    stop_grace_period: 1m
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+      # Read the Docker socket to enumerate other containers and sample their stats
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Read the parent app-data dir so we can compute real disk usage per app.
+      # Adjust if your Umbrel install lives elsewhere (e.g. umbrelOS uses a different path).
+      - /home/umbrel/umbrel/app-data:/host-app-data:ro
+    environment:
+      DATA_DIR: /data
+      HOST_APP_DATA_ROOT: /home/umbrel/umbrel/app-data
+      CONTAINER_APP_DATA_ROOT: /host-app-data
+    networks:
+      default:
+        ipv4_address: ${APP_LUNATICOIN_UMBRELANALYSER_IP}

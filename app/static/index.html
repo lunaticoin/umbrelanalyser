@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Umbrel Analyser</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header>
+    <h1>📊 Umbrel Analyser</h1>
+    <nav>
+      <a href="/">Apps</a>
+      <a href="/settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="toolbar">
+        <span id="health" class="muted">…</span>
+        <button id="refresh" class="btn">Refresh</button>
+        <span style="margin-left:auto" class="muted">Auto-refresh every 15s</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Containers</h2>
+      <table id="containers">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Image</th>
+            <th class="num">CPU %</th>
+            <th class="num">RAM</th>
+            <th class="num">Data dir</th>
+            <th class="num">Net rx/tx</th>
+            <th class="num">Last seen</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>umbrelanalyser · stored locally · <a class="muted" href="/api/health" style="text-decoration:none">/api/health</a></footer>
+
+  <script type="module" src="/static/index.js"></script>
+</body>
+</html>

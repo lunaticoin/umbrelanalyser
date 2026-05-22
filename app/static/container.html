@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Container · Umbrel Analyser</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header>
+    <h1>📊 Umbrel Analyser</h1>
+    <nav>
+      <a href="/">Apps</a>
+      <a href="/settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2 id="title">Loading…</h2>
+      <div class="stat-row" id="stats"></div>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <div class="range-buttons" id="ranges">
+          <button data-h="1">1h</button>
+          <button data-h="6">6h</button>
+          <button data-h="24" class="active">24h</button>
+          <button data-h="168">7d</button>
+          <button data-h="720">30d</button>
+        </div>
+        <span style="margin-left:auto"></span>
+        <a id="dl-csv" class="btn" href="#">Export CSV (samples)</a>
+        <a id="dl-csv-size" class="btn" href="#">Export CSV (sizes)</a>
+        <a id="dl-json" class="btn" href="#">Export JSON</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Charts</h2>
+      <div class="chart-grid">
+        <div><div class="chart-wrap"><canvas id="cpu"></canvas></div></div>
+        <div><div class="chart-wrap"><canvas id="mem"></canvas></div></div>
+        <div><div class="chart-wrap"><canvas id="blk"></canvas></div></div>
+        <div><div class="chart-wrap"><canvas id="net"></canvas></div></div>
+        <div style="grid-column: 1 / -1"><div class="chart-wrap"><canvas id="size"></canvas></div></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>umbrelanalyser</footer>
+
+  <script src="/static/vendor/chart.umd.min.js"></script>
+  <script src="/static/vendor/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script type="module" src="/static/container.js"></script>
+</body>
+</html>

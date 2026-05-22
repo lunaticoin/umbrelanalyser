@@ -1,0 +1,37 @@
+manifestVersion: 1
+id: lunaticoin-umbrelanalyser
+category: developer-tools
+name: Umbrel Analyser
+version: "1.0.0"
+tagline: Track CPU, RAM, disk and network of every Umbrel app
+description: >-
+  Umbrel Analyser samples resource consumption of every container running on your
+  Umbrel and stores it locally so you can study how each app behaves over time.
+
+  Built for the classic question: "how much does electrs use while it's indexing,
+  versus when it's idle?" — but it works for any app.
+
+  Features:
+
+  - Auto-discovers every container, no per-app config
+  - Samples CPU, RAM, disk I/O, real data-dir size and network usage
+  - Configurable polling interval and retention
+  - Per-app history charts with selectable time ranges (1h, 6h, 24h, 7d, 30d)
+  - Export raw samples and disk-size series as CSV or JSON for offline analysis
+
+  All data lives on your Umbrel — nothing leaves the device.
+releaseNotes: >-
+  First public release.
+developer: lunaticoin
+website: https://github.com/lunaticoin/umbrelanalyser
+dependencies: []
+repo: https://github.com/lunaticoin/umbrelanalyser
+support: https://github.com/lunaticoin/umbrelanalyser/issues
+icon: https://raw.githubusercontent.com/lunaticoin/lunaticoin-umbrel-app-store/main/lunaticoin-umbrelanalyser/icon.png
+port: 3000
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: lunaticoin
+submission: https://github.com/lunaticoin/lunaticoin-umbrel-app-store

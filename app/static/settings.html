@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Settings · Umbrel Analyser</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header>
+    <h1>📊 Umbrel Analyser</h1>
+    <nav>
+      <a href="/">Apps</a>
+      <a href="/settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Collection</h2>
+      <form id="form">
+        <div class="form-row">
+          <label for="poll_interval_seconds">Stats poll interval (seconds)</label>
+          <input type="number" id="poll_interval_seconds" name="poll_interval_seconds" min="5" step="1" />
+        </div>
+        <div class="form-row">
+          <label for="size_poll_interval_seconds">Disk-size poll interval (seconds)</label>
+          <input type="number" id="size_poll_interval_seconds" name="size_poll_interval_seconds" min="60" step="1" />
+        </div>
+        <div class="form-row">
+          <label for="retention_days">Retention (days)</label>
+          <input type="number" id="retention_days" name="retention_days" min="1" step="1" />
+        </div>
+        <div style="margin-top: 12px;">
+          <button type="submit" class="primary">Save</button>
+          <span id="msg" class="muted" style="margin-left: 10px;"></span>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Database</h2>
+      <div id="dbinfo" class="muted">Loading…</div>
+    </div>
+  </main>
+
+  <footer>umbrelanalyser</footer>
+  <script type="module" src="/static/settings.js"></script>
+</body>
+</html>

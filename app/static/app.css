@@ -1,0 +1,212 @@
+:root {
+  --bg: #0f1115;
+  --surface: #161a22;
+  --surface-2: #1e2330;
+  --border: #2a3142;
+  --text: #e6e8ec;
+  --muted: #8a93a6;
+  --accent: #f7931a;
+  --accent-2: #4aa8ff;
+  --ok: #3fb950;
+  --warn: #d29922;
+  --err: #f85149;
+  --radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+header nav {
+  display: flex;
+  gap: 14px;
+  margin-left: auto;
+}
+
+header nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+header nav a:hover, header nav a.active { color: var(--text); }
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.muted { color: var(--muted); }
+.ok    { color: var(--ok); }
+.warn  { color: var(--warn); }
+.err   { color: var(--err); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.card h2 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+th, td {
+  text-align: left;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  user-select: none;
+}
+
+tbody tr:hover { background: var(--surface-2); }
+
+td a { color: var(--accent-2); text-decoration: none; }
+td a:hover { text-decoration: underline; }
+
+.num { text-align: right; }
+
+button, .btn {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button:hover, .btn:hover { background: var(--border); }
+button.primary { background: var(--accent); color: #1a1a1a; border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.1); }
+
+input, select {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.range-buttons button.active {
+  background: var(--accent);
+  color: #1a1a1a;
+  border-color: var(--accent);
+}
+
+.chart-wrap {
+  position: relative;
+  height: 240px;
+  margin-bottom: 12px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  .chart-grid { grid-template-columns: 1fr; }
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.stat {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.stat .k { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }
+.stat .v { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+  margin-right: 6px;
+}
+.status-dot.warn { background: var(--warn); }
+.status-dot.err  { background: var(--err); }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.form-row label { margin: 0; }
+
+footer {
+  color: var(--muted);
+  text-align: center;
+  padding: 24px 12px;
+  font-size: 12px;
+}
