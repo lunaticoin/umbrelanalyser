@@ -7,12 +7,49 @@ const healthEl = document.getElementById("health");
 const refreshBtn = document.getElementById("refresh");
 
 let prevRows = new Map(); // container_id → { ts, net_rx, net_tx, blk_r, blk_w }
+let netRates = new Map(); // container_id → total bytes/s (rx+tx), used for sorting
+let sort = { key: "name", dir: "asc" };
+
+function sortKeyValue(c, key) {
+  const l = c.latest || {};
+  const s = c.latest_size || {};
+  switch (key) {
+    case "name":      return (c.name || "").toLowerCase();
+    case "image":     return (c.image || "").toLowerCase();
+    case "cpu":       return l.cpu_percent ?? -1;
+    case "mem":       return l.mem_bytes ?? -1;
+    case "size":      return s.data_dir_bytes ?? s.rw_bytes ?? -1;
+    case "net":       return netRates.get(c.id) ?? -1;
+    case "last_seen": return c.last_seen ?? 0;
+  }
+  return 0;
+}
+
+function sortContainers(arr) {
+  const sign = sort.dir === "asc" ? 1 : -1;
+  return [...arr].sort((a, b) => {
+    const av = sortKeyValue(a, sort.key);
+    const bv = sortKeyValue(b, sort.key);
+    if (typeof av === "string" || typeof bv === "string") return sign * String(av).localeCompare(String(bv));
+    return sign * (av - bv);
+  });
+}
+
+function updateCarets() {
+  document.querySelectorAll("#containers thead th").forEach((th) => {
+    const active = th.dataset.key === sort.key;
+    th.classList.toggle("sort-active", active);
+    const caret = th.querySelector(".caret");
+    if (caret) caret.textContent = active ? (sort.dir === "asc" ? "▲" : "▼") : "";
+  });
+}
 
 function render(containers) {
   if (!containers.length) {
     tbody.innerHTML = '<tr><td colspan="7" class="muted">No containers detected yet. Wait for the first poll.</td></tr>';
     return;
   }
+  containers = sortContainers(containers);
   const html = containers.map((c) => {
     const l = c.latest || {};
     const s = c.latest_size || {};
@@ -25,6 +62,7 @@ function render(containers) {
         const txr = Math.max(0, (l.net_tx_bytes - prev.net_tx) / dt);
         netRx = `${fmtBytes(rxr)}/s`;
         netTx = `${fmtBytes(txr)}/s`;
+        netRates.set(c.id, rxr + txr);
       }
     }
     if (l.ts) {
@@ -69,6 +107,25 @@ async function refresh() {
 }
 
 refreshBtn.addEventListener("click", refresh);
+
+// Sortable headers: click same key flips direction; click new key starts desc
+// for everything except the alphabetical ones (name/image), which start asc.
+document.querySelectorAll("#containers thead th").forEach((th) => {
+  th.addEventListener("click", () => {
+    const key = th.dataset.key;
+    if (!key) return;
+    if (sort.key === key) {
+      sort.dir = sort.dir === "asc" ? "desc" : "asc";
+    } else {
+      sort.key = key;
+      sort.dir = key === "name" || key === "image" ? "asc" : "desc";
+    }
+    updateCarets();
+    refresh();
+  });
+});
+
+updateCarets();
 refresh();
 setInterval(refresh, 15000);
 

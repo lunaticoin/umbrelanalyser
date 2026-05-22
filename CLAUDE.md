@@ -97,3 +97,4 @@ Aviso: Umbrel usa el campo `version` para detectar updates. Saltar 1.0.1 → 0.0
 - 2026-05-22 — proyecto creado, esqueleto inicial; v1.0.0 publicado al store
 - 2026-05-22 — v1.0.1: fix puerto host 3000→3737 (3000 reservado por umbrelOS, install fallaba al bind del app_proxy). Sólo cambio en manifest; no rebuild.
 - 2026-05-22 — v0.0.3: añadido export global (CSV samples/sizes y JSON con todo) en el dashboard con selector de rango. Título del header clickable → home. Reset de numeración a 0.0.x.
+- 2026-05-22 — v0.0.4: cabeceras de la tabla del dashboard ordenables (click → asc/desc, caret visual, default desc en numéricas / asc en alfabéticas).

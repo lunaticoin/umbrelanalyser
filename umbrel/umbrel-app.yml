@@ -2,7 +2,7 @@ manifestVersion: 1
 id: lunaticoin-umbrelanalyser
 category: developer-tools
 name: Umbrel Analyser
-version: "0.0.3"
+version: "0.0.4"
 tagline: Track CPU, RAM, disk and network of every Umbrel app
 description: >-
   Umbrel Analyser samples resource consumption of every container running on your
@@ -21,13 +21,11 @@ description: >-
 
   All data lives on your Umbrel — nothing leaves the device.
 releaseNotes: >-
-  v0.0.3:
-  - Global export from the dashboard: CSV (samples or sizes) and JSON across
-    all apps in one file, with a time-range picker (1h / 6h / 24h / 7d / 30d /
-    All).
-  - Click the title to go home.
-  - Version scheme reset to 0.0.x to signal pre-1.0 status; this is a deliberate
-    semver downgrade from 1.0.1.
+  v0.0.4:
+  - Sortable dashboard: click any column header to sort by it (asc/desc).
+    Defaults to descending on numeric columns (CPU, RAM, Data dir, Net,
+    Last seen) and ascending on text (Name, Image). A caret indicates the
+    active column.
 developer: lunaticoin
 website: https://github.com/lunaticoin/umbrelanalyser
 dependencies: []
