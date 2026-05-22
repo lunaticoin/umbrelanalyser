@@ -6,9 +6,12 @@ Caso de uso principal: comparar el consumo de una app como electrs durante index
 
 ## Estado actual
 
-- **Fase**: v0 — esqueleto inicial completo, pendiente de probar en Umbrel real
-- **Última sesión**: 2026-05-22 — creado el repo desde cero
-- **Última acción**: estructura base + manifest + workflow
+- **Fase**: v1.0.0 publicado a `lunaticoin/lunaticoin-umbrel-app-store`. Pendiente de probar en un Umbrel real.
+- **Última sesión**: 2026-05-22 — primer release + publicación al store comunitario
+- **Última acción**: workflow `docker.yml` (run 26276474522) construyó la imagen multi-arch, digest pineado `sha256:02080b2f155205fc1c5dbf054c25fe858f6f063bf6a2e12ba12fddcc903a864d`, push hecho a ambos repos
+- **Imagen**: `ghcr.io/lunaticoin/umbrelanalyser:v1.0.0`
+- **Repo código**: https://github.com/lunaticoin/umbrelanalyser
+- **Repo store**: https://github.com/lunaticoin/lunaticoin-umbrel-app-store (carpeta `lunaticoin-umbrelanalyser`)
 
 ## Estructura
 
@@ -74,15 +77,15 @@ gh workflow run docker.yml -R {username}/umbrelanalyser -f version=v1.0.0
 
 ## Tareas pendientes
 
-- [ ] Crear `umbrel/icon.png` (512x512)
-- [ ] Crear repo `umbrelanalyser` en GitHub y push
-- [ ] Crear repo del app store comunitario (`{username}-umbrel-app-store`) si no existe
-- [ ] Lanzar `gh workflow run docker.yml` para construir la imagen
-- [ ] Pinear digest en `docker-compose.yml`
-- [ ] Probar instalación en un Umbrel real
+- [x] Crear `umbrel/icon.png` (512x512) — generado por `scripts/make_icon.py`
+- [x] Crear repo `umbrelanalyser` en GitHub y push
+- [x] Crear repo del app store comunitario (ya existía: `lunaticoin-umbrel-app-store`)
+- [x] Lanzar `gh workflow run docker.yml` para construir la imagen
+- [x] Pinear digest en `docker-compose.yml`
+- [ ] Probar instalación en un Umbrel real (sobre todo confirmar que el mount `/home/umbrel/umbrel/app-data:ro` funciona en tu setup)
 - [ ] v2: downsampling de datos antiguos (raw 7d → 1m hasta 30d → 5m más allá)
 - [ ] v2: alertas (ej. notificar si RAM > X durante Y minutos)
 
 ## Log
 
-- 2026-05-22 — proyecto creado, esqueleto inicial
+- 2026-05-22 — proyecto creado, esqueleto inicial; v1.0.0 publicado al store
