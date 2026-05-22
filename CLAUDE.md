@@ -68,6 +68,7 @@ gh workflow run docker.yml -R {username}/umbrelanalyser -f version=v1.0.0
 
 ## Gotchas
 
+- **Puerto 3000 está reservado por umbrelOS** — cualquier app que ponga `port: 3000` en su manifest falla al bind y la install se queda en 1%. Usamos `3737` (libre). El puerto **interno** de FastAPI sigue siendo 3000 (no rebuild). Cambiar puerto externo: editar `umbrel/umbrel-app.yml` y `port:` en el manifest del store.
 - **Docker socket**: la app necesita `/var/run/docker.sock` montado read-only. Umbrel lo permite (igual que Portainer).
 - **Mount de app-data parent**: el path `/home/umbrel/umbrel/app-data` es el estándar de Umbrel-on-Pi. En umbrelOS podría diferir. Si falla, ajustar el bind mount en `docker-compose.yml`.
 - **CPU primera muestra**: el primer poll tras arrancar deja CPU% como `NULL` (se necesita delta). Esto es normal.
@@ -89,3 +90,4 @@ gh workflow run docker.yml -R {username}/umbrelanalyser -f version=v1.0.0
 ## Log
 
 - 2026-05-22 — proyecto creado, esqueleto inicial; v1.0.0 publicado al store
+- 2026-05-22 — v1.0.1: fix puerto host 3000→3737 (3000 reservado por umbrelOS, install fallaba al bind del app_proxy). Sólo cambio en manifest; no rebuild.

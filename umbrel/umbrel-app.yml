@@ -2,7 +2,7 @@ manifestVersion: 1
 id: lunaticoin-umbrelanalyser
 category: developer-tools
 name: Umbrel Analyser
-version: "1.0.0"
+version: "1.0.1"
 tagline: Track CPU, RAM, disk and network of every Umbrel app
 description: >-
   Umbrel Analyser samples resource consumption of every container running on your
@@ -21,14 +21,16 @@ description: >-
 
   All data lives on your Umbrel — nothing leaves the device.
 releaseNotes: >-
-  First public release.
+  v1.0.1: switch host port from 3000 to 3737 — 3000 is reserved by umbrelOS
+  itself (umbreld internal service) so apps that publish there fail to bind.
+  Internal app port unchanged.
 developer: lunaticoin
 website: https://github.com/lunaticoin/umbrelanalyser
 dependencies: []
 repo: https://github.com/lunaticoin/umbrelanalyser
 support: https://github.com/lunaticoin/umbrelanalyser/issues
 icon: https://raw.githubusercontent.com/lunaticoin/lunaticoin-umbrel-app-store/main/lunaticoin-umbrelanalyser/icon.png
-port: 3000
+port: 3737
 gallery: []
 path: ""
 defaultUsername: ""
