@@ -9,7 +9,7 @@ services:
 
   app:
     # Replace the digest after each build (see CLAUDE.md for the deploy flow)
-    image: ghcr.io/lunaticoin/umbrelanalyser:v0.0.4@sha256:7e5474058adae990ccbade9ef50f271811cd79561134a9face511e13f24ed630
+    image: ghcr.io/lunaticoin/umbrelanalyser:v0.0.5@sha256:cccc8bdc930487f65bf77916c74069c14b0d07d94dbca21731350bbfc9f1cc70
     init: true
     restart: on-failure
     stop_grace_period: 1m
