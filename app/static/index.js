@@ -1,6 +1,12 @@
-import { api, fmtBytes, fmtPct, fmtAgo, setupNav } from "/static/common.js";
+import { api, fmtBytes, fmtPct, fmtAgo, setupNav, setupAnalysisToggle } from "/static/common.js";
 
 setupNav("/");
+setupAnalysisToggle();
+
+const pausedBanner = document.getElementById("paused-banner");
+document.addEventListener("analysis-toggled", (e) => {
+  if (pausedBanner) pausedBanner.hidden = e.detail.enabled;
+});
 
 const tbody = document.querySelector("#containers tbody");
 const healthEl = document.getElementById("health");

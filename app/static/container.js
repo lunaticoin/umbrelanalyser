@@ -1,9 +1,10 @@
 import {
-  api, fmtBytes, fmtPct, fmtAgo, qs, setupNav,
+  api, fmtBytes, fmtPct, fmtAgo, qs, setupNav, setupAnalysisToggle,
   toRateSeries, toValueSeries,
 } from "/static/common.js";
 
 setupNav("/");
+setupAnalysisToggle();
 
 const containerId = qs("id");
 if (!containerId) { document.body.innerHTML = "<p>Missing ?id=</p>"; throw new Error("no id"); }

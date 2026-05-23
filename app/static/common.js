@@ -77,3 +77,53 @@ export function setupNav(activeHref) {
     if (a.getAttribute("href") === activeHref) a.classList.add("active");
   });
 }
+
+/**
+ * Wire up the header's analysis on/off toggle. Reads current state from
+ * /api/settings, flips it on click, and fires an `analysis-toggled` CustomEvent
+ * on document so pages can react (e.g. show a paused banner).
+ */
+export async function setupAnalysisToggle() {
+  const btn = document.getElementById("analysis-toggle");
+  if (!btn) return;
+  const stateEl = btn.querySelector(".state");
+  let enabled = true;
+
+  function render() {
+    btn.classList.toggle("off", !enabled);
+    if (stateEl) stateEl.textContent = enabled ? "ON" : "OFF";
+    btn.title = enabled
+      ? "Click to pause data collection"
+      : "Click to resume data collection";
+  }
+
+  function dispatch() {
+    document.dispatchEvent(new CustomEvent("analysis-toggled", { detail: { enabled } }));
+  }
+
+  try {
+    const s = await api("/api/settings");
+    enabled = s.enabled !== false;
+  } catch {}
+  render();
+  dispatch();
+
+  btn.addEventListener("click", async () => {
+    const target = !enabled;
+    btn.disabled = true;
+    try {
+      const s = await api("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: target }),
+      });
+      enabled = s.enabled !== false;
+      render();
+      dispatch();
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}

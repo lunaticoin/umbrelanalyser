@@ -13,9 +13,17 @@
       <a href="/">Apps</a>
       <a href="/settings.html">Settings</a>
     </nav>
+    <button class="analysis-toggle" id="analysis-toggle" type="button">
+      <span class="dot"></span>Analysis <span class="state">ON</span>
+    </button>
   </header>
 
   <main>
+    <div id="paused-banner" class="paused-banner" hidden>
+      Analysis is <strong>paused</strong>. No new samples are being collected.
+      Historical data and exports still work. Flip the switch in the top right to resume.
+    </div>
+
     <div class="card">
       <div class="toolbar">
         <span id="health" class="muted">…</span>

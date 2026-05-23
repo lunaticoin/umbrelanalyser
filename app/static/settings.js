@@ -1,6 +1,7 @@
-import { api, fmtBytes, fmtTs, setupNav } from "/static/common.js";
+import { api, fmtBytes, fmtTs, setupNav, setupAnalysisToggle } from "/static/common.js";
 
 setupNav("/settings.html");
+setupAnalysisToggle();
 
 const form = document.getElementById("form");
 const msg = document.getElementById("msg");

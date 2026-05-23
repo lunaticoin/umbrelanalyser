@@ -9,7 +9,6 @@ log = logging.getLogger(__name__)
 
 # Cap parallelism per poll so we don't hammer the Docker socket
 _STATS_CONCURRENCY = 6
-_SIZE_CONCURRENCY = 2
 
 
 class Collector:
@@ -50,13 +49,14 @@ class Collector:
     async def _loop_stats(self) -> None:
         while not self._stop.is_set():
             interval = max(5, int(settings.get("poll_interval_seconds")))
-            try:
-                await asyncio.to_thread(self._collect_stats_once)
-                self.last_stats_ok = db.now_ts()
-                self.last_error = None
-            except Exception as e:
-                self.last_error = f"stats: {e}"
-                log.exception("stats collection failed")
+            if settings.get("enabled"):
+                try:
+                    await asyncio.to_thread(self._collect_stats_once)
+                    self.last_stats_ok = db.now_ts()
+                    self.last_error = None
+                except Exception as e:
+                    self.last_error = f"stats: {e}"
+                    log.exception("stats collection failed")
             try:
                 await asyncio.wait_for(self._stop.wait(), timeout=interval)
             except asyncio.TimeoutError:
@@ -121,12 +121,13 @@ class Collector:
     async def _loop_sizes(self) -> None:
         while not self._stop.is_set():
             interval = max(60, int(settings.get("size_poll_interval_seconds")))
-            try:
-                await asyncio.to_thread(self._collect_sizes_once)
-                self.last_size_ok = db.now_ts()
-            except Exception as e:
-                self.last_error = f"sizes: {e}"
-                log.exception("size collection failed")
+            if settings.get("enabled"):
+                try:
+                    await asyncio.to_thread(self._collect_sizes_once)
+                    self.last_size_ok = db.now_ts()
+                except Exception as e:
+                    self.last_error = f"sizes: {e}"
+                    log.exception("size collection failed")
             try:
                 await asyncio.wait_for(self._stop.wait(), timeout=interval)
             except asyncio.TimeoutError:
@@ -135,37 +136,30 @@ class Collector:
     def _collect_sizes_once(self) -> None:
         client = docker_client.get_client()
         containers = docker_client.list_running_containers(client)
+        df_by_id = docker_client.df_containers(client)
         ts = db.now_ts()
         rows = []
 
-        from concurrent.futures import ThreadPoolExecutor
+        host_data_root_visible = os.path.isdir(docker_client.CONTAINER_APP_DATA_ROOT)
 
-        sem_count = min(_SIZE_CONCURRENCY, max(1, len(containers)))
-        with ThreadPoolExecutor(max_workers=sem_count) as ex:
-            inspect_futs = {ex.submit(docker_client.inspect_with_size, client, c["id"]): c for c in containers}
-            for fut in inspect_futs:
-                c = inspect_futs[fut]
-                try:
-                    insp = fut.result()
-                except Exception as e:
-                    log.warning("inspect fut failed %s: %s", c["name"], e)
-                    insp = None
-                if insp is None:
-                    continue
-                sizes = docker_client.get_size_from_inspect(insp)
-                data_dir_total: Optional[int] = None
-                mounts = docker_client.get_mount_sources(insp)
-                if os.path.isdir(docker_client.CONTAINER_APP_DATA_ROOT):
-                    total = 0
-                    counted = False
-                    for src in mounts:
-                        local = docker_client.host_path_to_container_path(src)
-                        if local and os.path.isdir(local):
-                            total += docker_client.du_bytes(local)
-                            counted = True
-                    if counted:
-                        data_dir_total = total
-                rows.append((c, sizes, data_dir_total))
+        for c in containers:
+            entry = df_by_id.get(c["id"]) or {}
+            sizes = docker_client.get_size_from_df_entry(entry)
+            mounts = docker_client.get_mount_sources(entry)
+
+            data_dir_total: Optional[int] = None
+            if host_data_root_visible and mounts:
+                total = 0
+                counted = False
+                for src in mounts:
+                    local = docker_client.host_path_to_container_path(src)
+                    if local and os.path.isdir(local):
+                        total += docker_client.du_bytes(local)
+                        counted = True
+                if counted:
+                    data_dir_total = total
+
+            rows.append((c, sizes, data_dir_total))
 
         with db.get_conn() as conn:
             for c, sizes, data_dir_total in rows:

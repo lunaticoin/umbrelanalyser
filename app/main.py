@@ -269,6 +269,7 @@ class SettingsPayload(BaseModel):
     poll_interval_seconds: Optional[int] = None
     size_poll_interval_seconds: Optional[int] = None
     retention_days: Optional[int] = None
+    enabled: Optional[bool] = None
 
 
 @app.get("/api/settings")

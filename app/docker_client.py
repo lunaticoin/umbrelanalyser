@@ -36,12 +36,24 @@ def get_stats(client: docker.DockerClient, container_id: str) -> Optional[Dict[s
         return None
 
 
-def inspect_with_size(client: docker.DockerClient, container_id: str) -> Optional[Dict[str, Any]]:
+def df_containers(client: docker.DockerClient) -> Dict[str, Dict[str, Any]]:
+    """Return SizeRw / SizeRootFs / Mounts for every container, keyed by full id.
+
+    Uses /system/df under the hood — one call covers every container, much
+    cheaper than N parallel inspect-with-size requests. (The docker SDK's
+    inspect_container does NOT accept a `size=True` kwarg in v7.x.)
+    """
     try:
-        return client.api.inspect_container(container_id, size=True)
-    except (NotFound, APIError) as e:
-        log.warning("inspect failed for %s: %s", container_id[:12], e)
-        return None
+        df = client.df()
+    except APIError as e:
+        log.warning("df failed: %s", e)
+        return {}
+    out: Dict[str, Dict[str, Any]] = {}
+    for entry in (df.get("Containers") or []):
+        cid = entry.get("Id")
+        if cid:
+            out[cid] = entry
+    return out
 
 
 def get_mount_sources(inspect: Dict[str, Any]) -> List[str]:
@@ -151,8 +163,8 @@ def parse_net(cur: Dict[str, Any]) -> Dict[str, Optional[int]]:
     return {"rx": rx, "tx": tx}
 
 
-def get_size_from_inspect(inspect: Dict[str, Any]) -> Dict[str, Optional[int]]:
+def get_size_from_df_entry(entry: Dict[str, Any]) -> Dict[str, Optional[int]]:
     return {
-        "rw": inspect.get("SizeRw"),
-        "root_fs": inspect.get("SizeRootFs"),
+        "rw": entry.get("SizeRw"),
+        "root_fs": entry.get("SizeRootFs"),
     }

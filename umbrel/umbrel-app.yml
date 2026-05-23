@@ -2,7 +2,7 @@ manifestVersion: 1
 id: lunaticoin-umbrelanalyser
 category: developer-tools
 name: Umbrel Analyser
-version: "0.0.4"
+version: "0.0.5"
 tagline: Track CPU, RAM, disk and network of every Umbrel app
 description: >-
   Umbrel Analyser samples resource consumption of every container running on your
@@ -21,11 +21,15 @@ description: >-
 
   All data lives on your Umbrel — nothing leaves the device.
 releaseNotes: >-
-  v0.0.4:
-  - Sortable dashboard: click any column header to sort by it (asc/desc).
-    Defaults to descending on numeric columns (CPU, RAM, Data dir, Net,
-    Last seen) and ascending on text (Name, Image). A caret indicates the
-    active column.
+  v0.0.5:
+  - New Analysis ON/OFF toggle in the header (top right). Switching to OFF
+    pauses all data collection (CPU/RAM/disk-IO and disk-size loops both
+    skip work) while keeping the UI, historical data and exports alive.
+    State is persisted and applies on next tick.
+  - Fix: disk-size data was never recorded. The docker SDK v7.x doesn't
+    accept `size=True` in `inspect_container()`, so every per-container
+    inspect was failing silently. Now we use `client.df()` which returns
+    SizeRw, SizeRootFs and Mounts for every container in a single call.
 developer: lunaticoin
 website: https://github.com/lunaticoin/umbrelanalyser
 dependencies: []

@@ -74,6 +74,7 @@ Aviso: Umbrel usa el campo `version` para detectar updates. Saltar 1.0.1 → 0.0
 ## Gotchas
 
 - **Puerto 3000 está reservado por umbrelOS** — cualquier app que ponga `port: 3000` en su manifest falla al bind y la install se queda en 1%. Usamos `3737` (libre). El puerto **interno** de FastAPI sigue siendo 3000 (no rebuild). Cambiar puerto externo: editar `umbrel/umbrel-app.yml` y `port:` en el manifest del store.
+- **`docker.api.inspect_container()` NO acepta `size=True` en docker-py 7.x** (silenciosamente warning'eado, no rompía pero dejaba `size_samples` vacío). Para tamaños usamos `client.df()` (`GET /system/df`), que en una sola llamada devuelve SizeRw, SizeRootFs y Mounts de todos los contenedores. Mucho más eficiente además.
 - **Docker socket**: la app necesita `/var/run/docker.sock` montado read-only. Umbrel lo permite (igual que Portainer).
 - **Mount de app-data parent**: el path `/home/umbrel/umbrel/app-data` es el estándar de Umbrel-on-Pi. En umbrelOS podría diferir. Si falla, ajustar el bind mount en `docker-compose.yml`.
 - **CPU primera muestra**: el primer poll tras arrancar deja CPU% como `NULL` (se necesita delta). Esto es normal.
@@ -98,3 +99,4 @@ Aviso: Umbrel usa el campo `version` para detectar updates. Saltar 1.0.1 → 0.0
 - 2026-05-22 — v1.0.1: fix puerto host 3000→3737 (3000 reservado por umbrelOS, install fallaba al bind del app_proxy). Sólo cambio en manifest; no rebuild.
 - 2026-05-22 — v0.0.3: añadido export global (CSV samples/sizes y JSON con todo) en el dashboard con selector de rango. Título del header clickable → home. Reset de numeración a 0.0.x.
 - 2026-05-22 — v0.0.4: cabeceras de la tabla del dashboard ordenables (click → asc/desc, caret visual, default desc en numéricas / asc en alfabéticas).
+- 2026-05-23 — v0.0.5: toggle Analysis ON/OFF en el header (pausa los loops sin tirar la UI). Fix gordo: docker-py 7.x no acepta `size=True` en `inspect_container()`, por eso `size_samples` quedaba vacío; ahora usamos `client.df()` (una sola llamada por poll).
